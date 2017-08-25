@@ -1,13 +1,13 @@
 # allegro_game_ai
 ## Arthur Phillip Silva
 
-## Conteudo
+# Conteudo
 * [Instalando Allegro](#instalando allegro)
  * [Linux](#linux)
  * [Windows](#windows)
 
-## Instalando Allegro
-### Linux
+# Instalando Allegro
+## Linux
 
 * Dependencias Obrigatórias </br>
 `sudo apt-get install build-essential subversion cmake xorg-dev libgl1-mesa-dev libglu-dev`
@@ -42,7 +42,7 @@ Refs:
 [Rafael Toledo](http://www.rafaeltoledo.net/compilando-e-instalando-a-biblioteca-allegro-5-no-ubuntu/),
 [Wiki Allegro](https://wiki.allegro.cc/index.php?title=Install_Allegro5_From_Git/Linux/Debian)
 
-### Windows
+## Windows
 * Faça o [download](https://github.com/liballeg/allegro5/releases/download/5.0.11/allegro-5.0.11.zip) do Allegro.
 * Extraia o conteúdo para a pasta C:.
 * Faça o [download](https://sourceforge.net/projects/mingw/files/latest/download?source=files) do MinGW.
