@@ -2,7 +2,7 @@
 ## Arthur Phillip Silva
 
 # Conteudo
-* [Instalando Allegro](#instalando allegro)
+* [Instalando Allegro](#instalando-allegro)
  * [Linux](#linux)
  * [Windows](#windows)
 
