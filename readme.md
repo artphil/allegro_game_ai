@@ -34,7 +34,7 @@ ou </br>
 `sudo make install`
 ---
 Para usar deve incluir no arquivo.c </br>
-`#include <allegro5/allegro.h>`
+`#include <allegro5/allegro.h>` </br>
 e compilar com </br>
 `gcc -lallegro arquivo.c`
 
@@ -44,13 +44,16 @@ Refs:
 
 ## Windows
 * Faça o [download](https://github.com/liballeg/allegro5/releases/download/5.0.11/allegro-5.0.11.zip) do Allegro.
-* Extraia o conteúdo para a pasta C:.
+* Extraia o conteúdo para a pasta _C:_ .
 * Faça o [download](https://sourceforge.net/projects/mingw/files/latest/download?source=files) do MinGW.
 * Instale o MinGW.
 ---
-Para usar deve incluir no arquivo.c </br>
+Para usar deve incluir no _arquivo.c_ </br>
 `#include <allegro5/allegro.h>`, </br>
-copiar o arquivo _allegro-5.0.11-monolith-mt.dll_ para a pasta do prejeto </br>
+copiar o arquivo _allegro-5.0.11-monolith-mt.dll_ para a pasta do projeto </br>
 e compilar com </br>
 `gcc -I C:\allegro-5.0.11-mingw-4.7.0\include -c arquivo.c -o arquivo.o` </br>
 `gcc -o arquivo.exe arquivo.o C:\allegro-5.0.11-mingw-4.7.0\lib\liballegro-5.0.11-monolith-mt.a`
+
+---
+Para este projeto foram utilizados o Allegro 5.0.11 e MinGW 4.7.0 .
