@@ -15,36 +15,62 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define NUM_RUAS 10
+#define NUM_STREETS 10
 
-const float FPS       = 60.0;   // frames por segundo
-const int SCREEN_W  = 640;      // largura tela
-const int SCREEN_H  = 480;      // altura tela
-const int BOUNCER_SIZE  = 32;   // tamanho do bouncer
+const float FPS         = 60.0;   // frames por segundo
+const int   SCREEN_W    = 640;    // largura tela
+const int   SCREEN_H    = 480;    // altura tela
+const int BOUNCER_SIZE  = 32;     // tamanho do bouncer
 
-int main(int argc, char **argv){
-        ALLEGRO_DISPLAY *display = NULL;
-        ALLEGRO_EVENT_QUEUE *event_queue = NULL;
-        ALLEGRO_TIMER *timer = NULL;
-        ALLEGRO_BITMAP *bouncer = NULL;
-        ALLEGRO_BITMAP *buses[NUM_RUAS];
-        int playing = 1;
+typedef struct point
+{
+        int x, y;
+} POINT;
+
+typedef struct velocity
+{
+        float x, y;
+} VELOCITY;
+
+typedef struct object
+{
+        ALLEGRO_BITMAP *img;
+        POINT           size;
+        POINT           pos;
+        VELOCITY        vel;
+        int             life;
+        int             score;
+} OBJECT;
+
+OBJECT new_player();
+OBJECT new_bus();
+
+int main(int argc, char **argv)
+{
+        ALLEGRO_DISPLAY     *display      = NULL;
+        ALLEGRO_EVENT_QUEUE *event_queue  = NULL;
+        ALLEGRO_TIMER       *timer        = NULL;
+        ALLEGRO_BITMAP      *bouncer      = NULL;
+        ALLEGRO_BITMAP      *buses[NUM_STREETS];
+
+        int playing   = 1;
         int collision = 0;
 
         //posicoes x e y iniciais do frog
         float bouncer_x = SCREEN_W / 2.0 - BOUNCER_SIZE / 2.0;
         float bouncer_y = SCREEN_H - BOUNCER_SIZE;
-        //o quanto as posicoes x e y vao variar ao longo do tempo. No t=1, se x do bouncer eh 40, no t=2, x do bouncer eh 40 + bouncer_dx = 36
-        float bouncer_dx = SCREEN_W /20.0, bouncer_dy = (float)SCREEN_H / NUM_RUAS;
+        // o quanto as posicoes x e y vao variar ao longo do tempo. No t=1,
+        // se x do bouncer eh 40, no t=2, x do bouncer eh 40 + bouncer_dx = 36
+        float bouncer_dx = SCREEN_W /20.0, bouncer_dy = (float)SCREEN_H / NUM_STREETS;
 
-        float TAM_RUA = (float) SCREEN_H / NUM_RUAS;
+        float TAM_RUA = (float) SCREEN_H / NUM_STREETS;
         float LARGURA_BUS = TAM_RUA * 0.8;
 
         //automoveis
-        float buses_x[NUM_RUAS];
-        float buses_y[NUM_RUAS];
-        float buses_comp[NUM_RUAS];
-        float buses_dx[NUM_RUAS];
+        float buses_x[NUM_STREETS];
+        float buses_y[NUM_STREETS];
+        float buses_comp[NUM_STREETS];
+        float buses_dx[NUM_STREETS];
 
         int i;
         int j;
@@ -80,7 +106,7 @@ int main(int argc, char **argv){
         }
 
         //buses
-        for(i=0; i<NUM_RUAS; i++) {
+        for(i=0; i<NUM_STREETS; i++) {
                 buses_y[i] = i*TAM_RUA + 0.1*TAM_RUA;
                 buses_x[i] = 0;
                 buses_comp[i] = rand()%(SCREEN_W/4) + 10;
@@ -172,7 +198,7 @@ int main(int argc, char **argv){
                         //desenho o bouncer nas novas posicoes x e y
                         al_draw_bitmap(bouncer, bouncer_x, bouncer_y, 0);
 
-                        for(i=0; i<NUM_RUAS; i++) {
+                        for(i=0; i<NUM_STREETS; i++) {
                                 buses_x[i] += buses_dx[i];
                                 if(buses_x[i] > SCREEN_W)
                                         buses_x[i] = 0;
@@ -202,9 +228,9 @@ int main(int argc, char **argv){
         //inicializa o modulo allegro que carrega as fontes
         al_init_font_addon();
         //inicializa o modulo allegro que entende arquivos tff de fontes
-        // al_init_ttf_addon();
+        al_init_ttf_addon();
         //carrega o arquivo arial.ttf da fonte Arial e define que sera usado o tamanho 32 (segundo parametro)
-        // ALLEGRO_FONT *size_32 = al_load_font("arial.ttf", 32, 1);
+        ALLEGRO_FONT *size_32 = al_load_font("arial.ttf", 32, 1);
 
         char my_text[20];
 
@@ -212,12 +238,14 @@ int main(int argc, char **argv){
         al_clear_to_color(al_map_rgb(0,0,0));
         //imprime o texto armazenado em my_text na posicao x=10,y=10 e com a cor rgb(128,200,30)
         if(collision)
-                // al_draw_text(size_32, al_map_rgb(200, 0, 30), SCREEN_W/3, SCREEN_H/2, 0, "Perdeu :(");
+        {
+        sprintf(my_text, "PERDEU : %.2f segundos", al_get_timer_count(timer)/FPS);
+        al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/3, SCREEN_H/2, 0, my_text);
+        }
+        else
+        {
                 sprintf(my_text, "Ganhou: %.2f segundos", al_get_timer_count(timer)/FPS);
-
-        else {
-                sprintf(my_text, "Perdeu :(", al_get_timer_count(timer)/FPS);
-                // al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/3, SCREEN_H/2, 0, my_text);
+                al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/3, SCREEN_H/2, 0, my_text);
         }
 
         //reinicializa a tela
@@ -226,7 +254,7 @@ int main(int argc, char **argv){
 
         //procedimentos de fim de jogo (fecha a tela, limpa a memoria, etc)
 
-        for(i=0; i<NUM_RUAS; i++)
+        for(i=0; i<NUM_STREETS; i++)
                 al_destroy_bitmap(buses[i]);
         al_destroy_bitmap(bouncer);
         al_destroy_timer(timer);

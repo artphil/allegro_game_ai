@@ -23,7 +23,7 @@ RM=del
 else
     #Linux stuff
 PATH_ALLEGRO=
-LIB_ALLEGRO=-lallegro
+LIB_ALLEGRO=-lallegro -lallegro_font -lallegro_ttf
 INCLUDE_ALLEGRO=
 I=
 
