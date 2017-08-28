@@ -22,22 +22,22 @@ const int   SCREEN_W    = 640;    // largura tela
 const int   SCREEN_H    = 480;    // altura tela
 const int BOUNCER_SIZE  = 32;     // tamanho do bouncer
 
-typedef struct point
+typedef struct point_integer
 {
         int x, y;
-} POINT;
+} POINT_I;
 
-typedef struct velocity
+typedef struct point_float
 {
         float x, y;
-} VELOCITY;
+} POINT_F;
 
 typedef struct object
 {
         ALLEGRO_BITMAP *img;
-        POINT           size;
-        POINT           pos;
-        VELOCITY        vel;
+        POINT_I         size;
+        POINT_I         pos;
+        POINT_F         vel;
         int             life;
         int             score;
 } OBJECT;

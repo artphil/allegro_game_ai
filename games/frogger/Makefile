@@ -3,7 +3,7 @@
 # Arthur Phillip F. Silva
 # Professor Pedro O. S. Vaz de Melo
 
-ALLEGRO_VERSION=5.0.11
+ALLEGRO_VERSION=5.0.10
 MINGW_VERSION=4.7.0
 
 FLAGS=-Wall
