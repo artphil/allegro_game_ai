@@ -40,4 +40,4 @@ frogger.o: frogger.c
 		gcc $(I) $(PATH_ALLEGRO)$(INCLUDE_ALLEGRO) -c frogger.c $(FLAGS)
 
 clean:
-	$(RM) *.o *.exe
+	$(RM) *.o *.exe *.out
