@@ -85,7 +85,7 @@ void __exit vtkbd_exit(void)
     /* unregister input device */
     input_unregister_device(vtkbd_input_dev);
 
-    printk("Virtual Keyboard driver.\n");
+        ("Virtual Keyboard driver.\n");
 }
 
 module_init(vtkbd_init);
