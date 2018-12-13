@@ -31,6 +31,7 @@ static int vtkbd_thread(void *unused)
 
         for (i = 0; i < sizeof(str_keys); i++) {
 
+
             input_report_key(vtkbd_input_dev, str_keys[i], 1);
             input_report_key(vtkbd_input_dev, str_keys[i], 0);
             input_sync(vtkbd_input_dev);
