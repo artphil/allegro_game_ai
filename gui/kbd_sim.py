@@ -3,6 +3,19 @@
 import pyautogui as pg
 import os
 import time
+import subprocess
+import sys
+
+''''''
+# start the app in a separate process using the same interpreter as this script
+process = subprocess.Popen([sys.executable, 'frogger.exe'])
+# wait for the window
+while True:	
+	window = pg.getWindow("frogger.exe")
+	if window:
+		window.set_foreground()
+		break
+'''
 
 # new terminal
 pg.hotkey("ctrl","alt", "t")
@@ -19,6 +32,8 @@ pg.press("return")
 
 # time.sleep(0.1)
 pg.click(100, 100)
+
+'''
 for i in range(5):
 	pg.press("w")
 
