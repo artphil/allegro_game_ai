@@ -1,6 +1,7 @@
 # https://pyautogui.readthedocs.io/en/latest/cheatsheet.html
 
 import pyautogui as pg
+import pygetwindow as gw
 import os
 import time
 import subprocess
@@ -8,40 +9,25 @@ import sys
 
 ''''''
 # start the app in a separate process using the same interpreter as this script
-process = subprocess.Popen([sys.executable, 'frogger.exe'])
+# process = subprocess.Popen([sys.executable, 'games/frogger/frogger.exe'])
+print(os.listdir())
+os.chdir('games\\frogger')
+print(os.listdir())
+process = subprocess.Popen('frogger.exe', shell=True)
 # wait for the window
+for x in gw.getAllTitles():
+	print(x) 
 while True:	
-	window = pg.getWindow("frogger.exe")
+	# window = pg.getWindow("frogger.exe")
+	window = False
+	try: 
+		window = gw.getWindowsWithTitle("frogger.exe")[0]
+	except:
+		pass 
+
 	if window:
-		window.set_foreground()
+		window.activate()
 		break
-'''
 
-# new terminal
-pg.hotkey("ctrl","alt", "t")
-
-time.sleep(3)
-pg.click(100, 100)
-
-# Go to dir
-pg.typewrite("cd Git/allegro_game_ai/games/frogger")
-pg.press("return")
-
-pg.typewrite("./frogger.exe")
-pg.press("return")
-
-# time.sleep(0.1)
-pg.click(100, 100)
-
-'''
-for i in range(5):
-	pg.press("w")
-
-time.sleep(3)
-for i in range(2):
-	pg.press("w")
-
-
-time.sleep(3)
-for i in range(3):
+for i in range(10):
 	pg.press("w")

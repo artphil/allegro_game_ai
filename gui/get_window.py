@@ -16,7 +16,7 @@ def gwtfp():
                         byref(pBytesReturned))
 
     # get the number of returned processes
-    nReturned = pBytesReturned.value/sizeof(c_ulong())
+    nReturned = int(pBytesReturned.value/sizeof(c_ulong()))
     pidProcessArray = [i for i in pProcessIds][:nReturned]
     print(pidProcessArray)
     #
@@ -28,11 +28,12 @@ def gwtfp():
 
 
     for process in pidProcessArray:
-        #print("Process PID %d" % process)
-        if IsWindowVisible(process):
+        # print("Process PID %d" % process)
+        if True:#IsWindowVisible(process):
             length = GetWindowTextLength(process)
-            buff = create_unicode_buffer(length + 1)
-            GetWindowText(process, buff, length + 1)
+            print(GetWindowText(process))
+            buff = create_unicode_buffer(length + 10)
+            GetWindowText(process, buff, length + 10)
             titles.append(buff.value)
 
 
