@@ -3,6 +3,18 @@ import pygetwindow as gw
 import os
 import subprocess
 
+class state():
+	n = 0
+	def __init__(self, window):
+		print(window)
+		self.region = (window.left, window.top, window.width, window.height)
+		if not os.path.exists('img'):
+			os.makedirs('img')
+		
+	def print(self, name):
+		self.n = self.n+1
+		return ag.screenshot('img\\'+name+str(self.n)+'.jpg', region=self.region)
+
 class ctrl:
 	def __init__(self,path,fexe,title):
 		# Se desloca para a pasta do programa
@@ -10,19 +22,14 @@ class ctrl:
 		# Inicia o programa em um novo proocesso
 		self.process = subprocess.Popen(fexe, shell=True)
 		
-
 		# Espera a janela abrir e a ativa 
-		window = False
 		while True:	
 			try: 
-				window = gw.getWindowsWithTitle(title)[0]
+				self.window = gw.getWindowsWithTitle(title)[0]
+				self.window.activate()
+				break
 			except:
 				pass 
-
-			if window:
-				self.window = window
-				window.activate()
-				break
 
 class finder:
 	def __init__(self, file_name):
