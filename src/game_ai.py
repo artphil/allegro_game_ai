@@ -2,6 +2,12 @@ import pyautogui as ag
 import pygetwindow as gw
 import os
 import subprocess
+import platform
+
+if platform.system() == "Windows":
+    bar = '\\'
+else:
+    bar = '/'
 
 class state():
 	n = 0
@@ -13,7 +19,7 @@ class state():
 		
 	def print(self, name):
 		self.n = self.n+1
-		return ag.screenshot('img\\'+name+str(self.n)+'.jpg', region=self.region)
+		return ag.screenshot('img'+bar+name+str(self.n)+'.jpg', region=self.region)
 
 class ctrl:
 	def __init__(self,path,fexe,title):
