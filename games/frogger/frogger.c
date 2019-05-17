@@ -55,6 +55,7 @@ int main(int argc, char **argv)
 
         int playing   = 1;
         int collision = 0;
+        int collided = 0;
 
         //posicoes x e y iniciais do frog
         float bouncer_x = SCREEN_W / 2.0 - BOUNCER_SIZE / 2.0;
@@ -198,6 +199,7 @@ int main(int argc, char **argv)
                         //desenho o bouncer nas novas posicoes x e y
                         al_draw_bitmap(bouncer, bouncer_x, bouncer_y, 0);
 
+                        j = 0;
                         for(i=0; i<NUM_STREETS; i++) {
                                 buses_x[i] += buses_dx[i];
                                 if(buses_x[i] > SCREEN_W)
@@ -209,10 +211,20 @@ int main(int argc, char **argv)
                                     && (bouncer_y < buses_y[i] + LARGURA_BUS \
                                     && bouncer_y > buses_y[i]) )
                                 {
-                                        playing = 0;
-                                        collision = 1;
+                                        // playing = 0;
+                                        j = 1;
+                                        if (!collided)
+                                        {
+                                                collided = 1;
+                                                collision += 1;
+                                                printf("colided: %d\n", collision);
+                                        }
                                 }
 
+                        }
+                        if (!j)
+                        {
+                                collided = 0;
                         }
                         //reinicializo a tela
                         al_flip_display();
@@ -240,12 +252,16 @@ int main(int argc, char **argv)
         if(collision)
         {
         sprintf(my_text, "PERDEU : %.2f segundos", al_get_timer_count(timer)/FPS);
-        al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/3, SCREEN_H/2, 0, my_text);
+        al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/4, SCREEN_H/2, 0, my_text);
+        sprintf(my_text, "Colisoes : %d", collision);
+        al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/4, 3*(SCREEN_H/5), 0, my_text);
         }
         else
         {
                 sprintf(my_text, "Ganhou: %.2f segundos", al_get_timer_count(timer)/FPS);
-                al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/3, SCREEN_H/2, 0, my_text);
+                al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/4, SCREEN_H/2, 0, my_text);
+                sprintf(my_text, "Colisoes : %d", collision);
+                al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/4, 3*(SCREEN_H/5), 0, my_text);
         }
 
         //reinicializa a tela

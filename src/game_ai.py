@@ -2,18 +2,31 @@ import pyautogui as ag
 import pygetwindow as gw
 import os
 import subprocess
+from datetime import time
 
 class state():
 	n = 0
+	nt = 0
+	ct = 0.0
 	def __init__(self, window):
 		print(window)
-		self.region = (window.left, window.top, window.width, window.height)
+		self.win = window
 		if not os.path.exists('img'):
 			os.makedirs('img')
 		
 	def print(self, name):
 		self.n = self.n+1
-		return ag.screenshot('img\\'+name+str(self.n)+'.jpg', region=self.region)
+		return ag.screenshot('img\\'+name+str(self.n)+'.jpg', region=(self.win.left, self.win.top, self.win.width, self.win.height))
+
+	# def print_clock(self, name, t):
+	# 	pid = os.fork()
+	# 	if pid == 0:
+	# 		while self.win.isActive:
+	# 			if time() - self.ct > t:
+	# 				self.ct = time()
+	# 				self.nt = self.nt+1
+	# 				ag.screenshot('img\\'+name+'_t_'+str(self.nt)+'.jpg', region=(self.win.left, self.win.top, self.win.width, self.win.height))
+
 
 class ctrl:
 	def __init__(self,path,fexe,title):

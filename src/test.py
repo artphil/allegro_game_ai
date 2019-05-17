@@ -13,6 +13,8 @@ print(data.keys)
 control = ctrl("games\\frogger", "frogger.exe", "frogger.exe")
 capture = state(control.window)
 
+# capture.print_clock(f_name, 300)
+
 l = len(data.keys)-1
 while control.window.isActive:
 # for i in range(10):
