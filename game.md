@@ -78,7 +78,8 @@ e compilar com </br>
 Refs:
 [Pedro Olmo](https://www.youtube.com/watch?v=AezxBP687n8&t=9s), 
 [Ezequiel França](https://github.com/ezefranca/Master-Exploder/wiki/Compila%C3%A7%C3%A3o-e-Instala%C3%A7%C3%A3o-Allegro-5-e-OpenCV-no-Windows)
-Recomenda-se o uso de makefile
+
+Recomenda-se o uso de [makefile](https://pt.wikibooks.org/wiki/Programar_em_C/Makefiles)
 
 ---
 Para este projeto foram utilizados o Allegro 5.0.10 com MinGW 4.7.0 .
