@@ -3,6 +3,12 @@ import pygetwindow as gw
 import os
 import subprocess
 from datetime import time
+import platform
+
+if platform.system() == "Windows":
+    bar = '\\'
+else:
+    bar = '/'
 
 class state():
 	n = 0

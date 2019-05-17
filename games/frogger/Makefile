@@ -6,6 +6,8 @@
 ALLEGRO_VERSION=5.0.10
 MINGW_VERSION=4.7.0
 
+FILE_EXE=frogger
+
 FLAGS=-Wall
 
 # Especifididades de sistema
@@ -31,13 +33,13 @@ RM=rm
 
 endif
 
-all: frogger.exe
+all: $(FILE_EXE).exe
 
-frogger.exe: frogger.o
-	gcc -o frogger.exe frogger.o $(PATH_ALLEGRO)$(LIB_ALLEGRO) $(FLAGS)
+$(FILE_EXE).exe: $(FILE_EXE).o
+	gcc -o $(FILE_EXE).exe $(FILE_EXE).o $(PATH_ALLEGRO)$(LIB_ALLEGRO) $(FLAGS)
 
-frogger.o: frogger.c
-		gcc $(I) $(PATH_ALLEGRO)$(INCLUDE_ALLEGRO) -c frogger.c $(FLAGS)
+$(FILE_EXE).o: $(FILE_EXE).c
+		gcc $(I) $(PATH_ALLEGRO)$(INCLUDE_ALLEGRO) -c $(FILE_EXE).c $(FLAGS)
 
 clean:
 	$(RM) *.o *.exe *.out
