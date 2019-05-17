@@ -1,4 +1,4 @@
-# [allegro_game_ai](readme)
+# [allegro_game_ai](readme.md)
 ## Arthur Phillip Silva
 
 # Conteudo

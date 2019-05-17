@@ -2,5 +2,5 @@
 ## Arthur Phillip Silva
 
 # Dependencias
-* [Jogo](game)
-* [Python](python)
+* [Jogo](game.md)
+* [Python](python.md)
