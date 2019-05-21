@@ -21,8 +21,9 @@ class state():
 			os.makedirs('img')
 		
 	def print(self, name):
-		self.n = self.n+1
-		return ag.screenshot('img\\'+name+str(self.n)+'.jpg', region=(self.win.left, self.win.top, self.win.width, self.win.height))
+		if self.win.isActive:
+			self.n = self.n+1
+			return ag.screenshot('img\\'+name+str(self.n)+'.jpg', region=(self.win.left, self.win.top, self.win.width, self.win.height))
 
 	# def print_clock(self, name, t):
 	# 	pid = os.fork()
@@ -49,8 +50,13 @@ class ctrl:
 				break
 			except:
 				pass 
+	def edges(self):
+		return self.window.left, self.window.left+self.window.width, self.window.top, self.window.top+self.window.height
 
 class finder:
+	keyboard = False
+	mouse = False
+
 	def __init__(self, file_name):
 		# Abre o arquivo *.c
 		try:
@@ -58,11 +64,19 @@ class finder:
 		except:
 			print("File {} not found.".format(file_name))
 			return
-
+		
 		# Guarda todas as palavras do arquivo 
 		self.words = self.to_list(self.file)
+
+		if self.search('mouse'):
+			self.mouse = True
+
 		# Recupera todas as teclas pressionaveis
 		self.keys = self.get_keys('ALLEGRO_KEY_')
+
+		if len(self.keys)>0:
+			self.keyboard = True
+
 		
 	# Transforma um arquivo.c em uma lista de palavras
 	def to_list(self, txt):
