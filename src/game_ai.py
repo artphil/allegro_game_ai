@@ -10,6 +10,7 @@ if platform.system() == "Windows":
 else:
     bar = '/'
 
+# Perceptor
 class state():
 	n = 0
 	nt = 0
@@ -34,7 +35,7 @@ class state():
 	# 				self.nt = self.nt+1
 	# 				ag.screenshot('img\\'+name+'_t_'+str(self.nt)+'.jpg', region=(self.win.left, self.win.top, self.win.width, self.win.height))
 
-
+# Atuador
 class ctrl:
 	def __init__(self,path,fexe,title):
 		# Se desloca para a pasta do programa
@@ -53,6 +54,7 @@ class ctrl:
 	def edges(self):
 		return self.window.left, self.window.left+self.window.width, self.window.top, self.window.top+self.window.height
 
+# Identificador
 class finder:
 	keyboard = False
 	mouse = False
