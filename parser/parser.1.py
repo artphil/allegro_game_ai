@@ -33,7 +33,7 @@ print (lib)
 invalids  = ['\n','\t']
 
 for s in invalids:
-        text = text.replace(s,' ')
+        text = text..strip('\n\t')
 
 # Destaca caracteres validos
 starts  = ['[','{','(']
