@@ -19,7 +19,7 @@ else:
 if len(sys.argv) > 2:
     f_name = sys.argv[2]
 else:
-    f_name = 'teste'
+    f_name = "_"+game
 
 if not os.path.isfile("games"+bar+folder+bar+game+".c"):
     print("Arquivo 'games"+bar+folder+bar+game+".c' nao existe")
