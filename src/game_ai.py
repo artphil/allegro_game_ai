@@ -21,9 +21,14 @@ class state():
 		if not os.path.exists('img'):
 			os.makedirs('img')
 		
-	def print(self, name):
+	def print(self, name, serial=True):
 		if self.win.isActive:
 			self.n = self.n+1
+			if serial:
+				file_name = 'img\\'+name+str(self.n)+'.jpg'
+			else: 
+				file_name = 'img\\'+name+'.jpg'
+
 			return ag.screenshot('img\\'+name+str(self.n)+'.jpg', region=(self.win.left, self.win.top, self.win.width, self.win.height))
 
 	# def print_clock(self, name, t):
@@ -51,6 +56,7 @@ class ctrl:
 				break
 			except:
 				pass 
+	# Recupera as posições dos limites da janela 
 	def edges(self):
 		return self.window.left, self.window.left+self.window.width, self.window.top, self.window.top+self.window.height
 
@@ -70,19 +76,21 @@ class finder:
 		# Guarda todas as palavras do arquivo 
 		self.words = self.to_list(self.file)
 
+		# Verifica se o mouse e usado
 		if self.search('mouse'):
 			self.mouse = True
 
 		# Recupera todas as teclas pressionaveis
 		self.keys = self.get_keys('ALLEGRO_KEY_')
 
+		# Verifica se o teclado e usado
 		if len(self.keys)>0:
 			self.keyboard = True
 
 		
 	# Transforma um arquivo.c em uma lista de palavras
 	def to_list(self, txt):
-		# Aprende todos osimbolos utilizados
+		# Aprende todos os simbolos utilizados
 		simbols = []
 		valids = [' ','_']
 		for a in txt:
