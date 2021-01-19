@@ -154,7 +154,8 @@ int main(int argc, char **argv)
         al_start_timer(timer);
 
         //enquanto playing for verdadeiro, faca:
-        while(playing) {
+        // while(playing) { // Aceita varias colisoes
+        while(playing && collision==0) { // Aceita 1 colisao
                 ALLEGRO_EVENT ev;
                 //espera por um evento e o armazena na variavel de evento ev
                 al_wait_for_event(event_queue, &ev);
