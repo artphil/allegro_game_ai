@@ -14,7 +14,7 @@ class control:
 		self.process = subprocess.Popen(fexe, stdout=subprocess.PIPE, shell=True)
 		
 		if _OS == 'WIN':
-			self.window = getWindowWindows(title)
+			self.window = self.getWindowWindows(title)
 		else:
 			print('Sistema Operacional não suportado')
 			quit()
@@ -32,7 +32,7 @@ class control:
 		return window
 
 	def getWindowMac(self,title,locate_on_screen,box_height,box_width=None,adjust_top=0,adjust_left=0): # !!!! Workaround - NOT RECOMENDED !!!!
-		return window_for_mac(title,locate_on_screen,box_height,box_width,adjust_top,adjust_left)
+		return None # window_for_mac(title,locate_on_screen,box_height,box_width,adjust_top,adjust_left)
 
 
 	def getWindowLinux(self,title,locate_on_screen,box_height,box_width=None,adjust_top=0,adjust_left=0): # !!!! Workaround - NOT RECOMENDED !!!!
@@ -53,3 +53,21 @@ class control:
 	# Clica com o mouse
 	def click(self, coord_x, coord_y):
 		return ag.click(x=coord_x, y=coord_y)
+
+# Classe de janela para Mac !!!! Workaround - NOT RECOMENDED !!!!
+class window_for_mac:
+	def __init__(self,title,locate_on_screen,box_height,box_width=None,adjust_top=0,adjust_left=0):
+		self.title = title
+		self.isActive = False
+		self.box_region = None
+		while not self.isActive:
+			try:
+				self.box_region=ag.locateOnScreen(locate_on_screen)
+				self.isActive = self.box_region is not None
+			except:
+				pass
+
+		self.top = self.box_region.top + self.box_region.height + adjust_top
+		self.left = self.box_region.left + adjust_left
+		self.width = box_width if box_width is not None else self.box_region.width
+		self.height = box_height
