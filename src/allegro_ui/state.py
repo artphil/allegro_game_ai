@@ -17,6 +17,7 @@ class state():
 		else: 
 			shutil.rmtree(self.path)
 			os.makedirs(self.path)
+		print('Imagens salvas em:',self.path)
 		
 	def print(self):
 		if self.win.isActive:
