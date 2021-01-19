@@ -1,39 +1,42 @@
-from game_ai import *
-import pyautogui as ag
-from random import randint
+import allegro_ui as au
+
 import sys
 import os
-import platform
+from random import randint
+from tkinter import filedialog
 
-if platform.system() == "Windows":
-    bar = '\\'
-else:
-    bar = '/'
+BAR = au.base.BAR
 
-if len(sys.argv) > 1:
-    folder = game = sys.argv[1]
-else:
-    print('\nE necessario o nome do jogo.\n')
-    quit()
+print('Iniciando programa')
 
-if len(sys.argv) > 2:
-    f_name = sys.argv[2]
-else:
-    f_name = "_"+game
+print('Selecione o código fonte do jogo')
+path_file_code = filedialog.askopenfilename(filetypes=[("Código C", ".c")])
+print (path_file_code)
+print()
 
-if not os.path.isfile("games"+bar+folder+bar+game+".c"):
-    print("Arquivo 'games"+bar+folder+bar+game+".c' nao existe")
-    quit()
+print('Selecione o executável do jogo')
+path_file_exe = filedialog.askopenfilename(filetypes=[("Execuável", ".exe")])
+filename_exe = path_file_exe.split('/')[-1]
+print (path_file_exe)
+print ('Executável:', filename_exe)
+print()
 
-print("games"+bar+folder+bar+game+".c")
-data = finder("games"+bar+folder+bar+game+".c")
+print('Selecione um diretório para os resultados')
+path_results = filedialog.askdirectory()
+print (path_results)
+print()
+
+# Obitendo dados do jogo
+data = au.finder(path_file_code)
 print(data)
-print(data.keys)
+# mouse =
+print('Mouse ON' if data.mouse else 'Mouse OFF')
+print('Teclas:',data.keys)
+print()
 
-control = ctrl("games"+bar+folder, game+".exe", game+".exe")
-capture = state(control.window)
+control = au.control(path_file_exe, filename_exe)
 
-# capture.print_clock(f_name, 300)
+capture = au.state(control.window, path_results)
 
 l = len(data.keys)-1
 while control.window.isActive:
@@ -41,15 +44,14 @@ while control.window.isActive:
         a = data.keys[randint(0,l)]
         if a != 'escape':
             print("Pressed:", a) 
-            ag.press(a)
+            control.press(a)
         else:
             print('pause') 
-        capture.print(f_name)
+        capture.print()
     if data.mouse:
         x1, x2, y1, y2 = control.edges()
         x = randint(x1,x2)
         y = randint(y1,y2)
         print("Clicked:", x, y)
-        ag.click(x=x,y=y)
-        capture.print(f_name)
-
+        control.click(x,y)
+        capture.print()

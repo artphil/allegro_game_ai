@@ -6,20 +6,19 @@ from .base import BAR
 # Perceptor
 class state():
 	n = 0
-	nt = 0
-	ct = 0.0
-	def __init__(self, window):
+	def __init__(self, window, path='.', name='screen'):
 		print(window)
+		self.path = path + '/img'
 		self.win = window
-		if not os.path.exists('img'):
-			os.makedirs('img')
+		self.name = name
+		if not os.path.exists(self.path):
+			os.makedirs(self.path)
 		
-	def print(self, name, serial=True):
+	def print(self):
 		if self.win.isActive:
 			self.n = self.n+1
-			if serial:
-				file_name = 'img'+BAR+name+str(self.n)+'.jpg'
-			else: 
-				file_name = 'img'+BAR+name+'.jpg'
+			print_name = self.path+BAR+self.name+str(self.n)+'.png'
 
-			return ag.screenshot(file_name, region=(self.win.left, self.win.top, self.win.width, self.win.height))
+			return ag.screenshot(print_name, region=(self.win.left, self.win.top, self.win.width, self.win.height))
+		else:
+			return None

@@ -5,9 +5,9 @@ import pyautogui as ag
 
 # Atuador
 class control:
-	def __init__(self,path,fexe,title):
+	def __init__(self,fexe,title):
 		# Se desloca para a pasta do programa
-		os.chdir(path)
+		# os.chdir(path)
 		# Inicia o programa em um novo proocesso
 		self.process = subprocess.Popen(fexe, shell=True)
 		
@@ -23,7 +23,7 @@ class control:
 	# Retorna o estado da janela
 	def isActive(self):
 		return self.window.isActive
-		
+
 	# Recupera as posições dos limites da janela 
 	def edges(self):
 		return self.window.left, self.window.left+self.window.width, self.window.top, self.window.top+self.window.height
