@@ -8,7 +8,7 @@ class state():
 	n = 0
 	def __init__(self, window, path='.', name='screen'):
 		print(window)
-		self.path = path + '/img'
+		self.path = path + BAR + 'img'
 		self.win = window
 		self.name = name
 		if not os.path.exists(self.path):
