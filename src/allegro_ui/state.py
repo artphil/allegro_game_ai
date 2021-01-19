@@ -1,4 +1,5 @@
 import os
+import shutil
 import pyautogui as ag
 
 from .base import BAR
@@ -12,6 +13,9 @@ class state():
 		self.win = window
 		self.name = name
 		if not os.path.exists(self.path):
+			os.makedirs(self.path)
+		else: 
+			shutil.rmtree(self.path)
 			os.makedirs(self.path)
 		
 	def print(self):
