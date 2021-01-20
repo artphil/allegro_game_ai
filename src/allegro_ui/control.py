@@ -6,7 +6,7 @@ import pyautogui as ag
 from .base import _OS
 
 # Atuador
-class control:
+class Control:
 	def __init__(self,fexe,title):
 		# Se desloca para a pasta do programa
 		# os.chdir(path)

@@ -5,7 +5,7 @@ import pyautogui as ag
 from .base import BAR
 
 # Perceptor
-class state():
+class State():
 	n = 0
 	def __init__(self, window, path='.', name='screen'):
 		print(window)

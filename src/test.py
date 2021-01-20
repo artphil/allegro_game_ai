@@ -1,6 +1,5 @@
 import allegro_ui as au
 
-import sys
 import os
 from random import randint
 from tkinter import filedialog
@@ -27,16 +26,17 @@ print (path_results)
 print()
 
 # Obitendo dados do jogo
-data = au.finder(path_file_code)
+data = au.Finder(path_file_code)
 print(data)
 # mouse =
 print('Mouse ON' if data.mouse else 'Mouse OFF')
 print('Teclas:',data.keys)
 print()
 
-control = au.control(path_file_exe, filename_exe)
+# Iniciando o jogo
+control = au.Control(path_file_exe, filename_exe)
 
-capture = au.state(control.window, path_results)
+capture = au.State(control.window, path_results)
 
 l = len(data.keys)-1
 while control.window.isActive:

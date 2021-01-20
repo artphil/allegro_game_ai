@@ -1,5 +1,5 @@
 # Identificador
-class finder:
+class Finder:
 	keyboard = False
 	mouse = False
 
