@@ -39,7 +39,7 @@ $(FILE_EXE).exe: $(FILE_EXE).o
 	gcc -o $(FILE_EXE).exe $(FILE_EXE).o $(PATH_ALLEGRO)$(LIB_ALLEGRO) $(FLAGS)
 
 $(FILE_EXE).o: $(FILE_EXE).c
-		gcc $(I) $(PATH_ALLEGRO)$(INCLUDE_ALLEGRO) -c $(FILE_EXE).c $(FLAGS)
+	gcc $(I) $(PATH_ALLEGRO)$(INCLUDE_ALLEGRO) -c $(FILE_EXE).c $(FLAGS)
 
 clean:
 	$(RM) *.o *.exe *.out

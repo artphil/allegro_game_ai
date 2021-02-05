@@ -1,4 +1,5 @@
 import os
+import io
 import subprocess
 import pygetwindow as gw
 import pyautogui as ag
@@ -11,7 +12,10 @@ class Control:
 		# Se desloca para a pasta do programa
 		# os.chdir(path)
 		# Inicia o programa em um novo proocesso
-		self.process = subprocess.Popen(fexe, stdout=subprocess.PIPE, shell=True)
+		self.process = subprocess.Popen(fexe, 
+						shell=True,
+                        stdout=subprocess.PIPE,
+						)
 		
 		if _OS == 'WIN':
 			self.window = self.getWindowWindows(title)
@@ -46,6 +50,11 @@ class Control:
 	def edges(self):
 		return self.window.left, self.window.left+self.window.width, self.window.top, self.window.top+self.window.height
 
+	def stop(self):
+		self.process.terminate()
+		while self.window.isActive:
+			pass
+
 	# Preciona uma tecla
 	def press(self, key):
 		return ag.press(key)
@@ -53,6 +62,15 @@ class Control:
 	# Clica com o mouse
 	def click(self, coord_x, coord_y):
 		return ag.click(x=coord_x, y=coord_y)
+
+	def getReward(self):
+		try:
+			output = self.process.stdout.read1().decode()
+			reward = int(output.split()[0])
+		except:
+			reward = 0
+		return reward
+	
 
 # Classe de janela para Mac !!!! Workaround - NOT RECOMENDED !!!!
 class window_for_mac:

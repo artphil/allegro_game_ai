@@ -45,6 +45,14 @@ typedef struct object
 OBJECT new_player();
 OBJECT new_bus();
 
+void print_reward(ALLEGRO_FILE *fd, int reward) {
+        char txt[5];
+        sprintf(txt, "%3d\n", reward);
+        al_fflush(fd);
+        al_fwrite(fd, txt, sizeof(txt));
+}
+
+
 int main(int argc, char **argv)
 {
         ALLEGRO_DISPLAY     *display      = NULL;
@@ -52,6 +60,10 @@ int main(int argc, char **argv)
         ALLEGRO_TIMER       *timer        = NULL;
         ALLEGRO_BITMAP      *bouncer      = NULL;
         ALLEGRO_BITMAP      *buses[NUM_STREETS];
+
+        ALLEGRO_FILE *text_out = al_fopen_fd(1, "w");
+        char txt[5];
+        int reward = 0;
 
         int playing   = 1;
         int collision = 0;
@@ -153,9 +165,14 @@ int main(int argc, char **argv)
         //inicia o temporizador
         al_start_timer(timer);
 
+
+        print_reward(text_out, reward);
+
         //enquanto playing for verdadeiro, faca:
         // while(playing) { // Aceita varias colisoes
-        while(playing && collision==0) { // Aceita 1 colisao
+        while(playing) { // Aceita 1 colisao
+        print_reward(text_out, reward);
+
                 ALLEGRO_EVENT ev;
                 //espera por um evento e o armazena na variavel de evento ev
                 al_wait_for_event(event_queue, &ev);
@@ -167,21 +184,29 @@ int main(int argc, char **argv)
                         //se a tecla for o W
                         case ALLEGRO_KEY_W:
                                 bouncer_y -= bouncer_dy;
-                                if(bouncer_y < 0)
+                                if(bouncer_y < 0) {
+                                        reward += 50;
                                         playing = 0;
+                                        print_reward(text_out, reward);
+                                }
+                                else 
+                                        reward += 5;
                                 break;
                         //se a tecla for o S
                         case ALLEGRO_KEY_S:
+                                reward -= 5;
                                 if(bouncer_y < SCREEN_H - BOUNCER_SIZE)
                                         bouncer_y += bouncer_dy;
                                 break;
 
                         case ALLEGRO_KEY_A:
+                                reward -= 1;
                                 if(bouncer_x > 0)
                                         bouncer_x -= bouncer_dx;
                                 break;
 
                         case ALLEGRO_KEY_D:
+                                reward -= 1;
                                 if(bouncer_x < SCREEN_W - BOUNCER_SIZE)
                                         bouncer_x += bouncer_dx;
                                 break;
@@ -190,6 +215,8 @@ int main(int argc, char **argv)
                                 playing = 0;
                                 break;
                         }
+
+                        print_reward(text_out, reward);
 
                 }
 
@@ -212,13 +239,15 @@ int main(int argc, char **argv)
                                     && (bouncer_y < buses_y[i] + LARGURA_BUS \
                                     && bouncer_y > buses_y[i]) )
                                 {
-                                        // playing = 0;
+                                        reward -= 30;
+                                        print_reward(text_out, reward);
+                                        playing = 0; 
                                         j = 1;
                                         if (!collided)
                                         {
                                                 collided = 1;
                                                 collision += 1;
-                                                printf("colided: %d\n", collision);
+                                                // printf("colided: %d\n", collision);
                                         }
                                 }
 
@@ -239,35 +268,35 @@ int main(int argc, char **argv)
         } //fim do while
 
         //inicializa o modulo allegro que carrega as fontes
-        al_init_font_addon();
+        // al_init_font_addon();
         //inicializa o modulo allegro que entende arquivos tff de fontes
-        al_init_ttf_addon();
+        // al_init_ttf_addon();
         //carrega o arquivo arial.ttf da fonte Arial e define que sera usado o tamanho 32 (segundo parametro)
-        ALLEGRO_FONT *size_32 = al_load_font("arial.ttf", 32, 1);
+        // ALLEGRO_FONT *size_32 = al_load_font("arial.ttf", 32, 1);
 
-        char my_text[20];
+        // char my_text[20];
 
         //colore toda a tela de preto
-        al_clear_to_color(al_map_rgb(0,0,0));
+        // al_clear_to_color(al_map_rgb(0,0,0));
         //imprime o texto armazenado em my_text na posicao x=10,y=10 e com a cor rgb(128,200,30)
-        if(collision)
-        {
-        sprintf(my_text, "PERDEU : %.2f segundos", al_get_timer_count(timer)/FPS);
-        al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/4, SCREEN_H/2, 0, my_text);
-        sprintf(my_text, "Colisoes : %d", collision);
-        al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/4, 3*(SCREEN_H/5), 0, my_text);
-        }
-        else
-        {
-                sprintf(my_text, "Ganhou: %.2f segundos", al_get_timer_count(timer)/FPS);
-                al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/4, SCREEN_H/2, 0, my_text);
-                sprintf(my_text, "Colisoes : %d", collision);
-                al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/4, 3*(SCREEN_H/5), 0, my_text);
-        }
+        // if(collision)
+        // {
+        //         sprintf(my_text, "PERDEU : %.2f segundos", al_get_timer_count(timer)/FPS);
+        //         al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/4, SCREEN_H/2, 0, my_text);
+        //         sprintf(my_text, "Pontos : %d", reward);
+        //         al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/4, 3*(SCREEN_H/5), 0, my_text);
+        // }
+        // else
+        // {
+        //         sprintf(my_text, "Ganhou: %.2f segundos", al_get_timer_count(timer)/FPS);
+        //         al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/4, SCREEN_H/2, 0, my_text);
+        //         sprintf(my_text, "Pontos : %d", reward);
+        //         al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/4, 3*(SCREEN_H/5), 0, my_text);
+        // }
 
         //reinicializa a tela
-        al_flip_display();
-        al_rest(3);
+        // al_flip_display();
+        // al_rest(3);
 
         //procedimentos de fim de jogo (fecha a tela, limpa a memoria, etc)
 
