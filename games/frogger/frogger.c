@@ -221,7 +221,7 @@ int main(int argc, char **argv)
                 }
 
                 //se o tipo de evento for um evento do temporizador, ou seja, se o tempo passou de t para t+1
-                if(ev.type == ALLEGRO_EVENT_TIMER) {
+                else if(ev.type == ALLEGRO_EVENT_TIMER) {
                         //limpo a tela
                         al_clear_to_color(al_map_rgb(0,0,0));
                         //desenho o bouncer nas novas posicoes x e y

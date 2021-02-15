@@ -25,13 +25,17 @@ class Control:
 
 	def getWindowWindows(self,title):
 		# Espera a janela abrir e a ativa 
-		while True:	
+		count = 0
+		while True:
+			if count > 1000:
+				return None
 			try: 
 				window = gw.getWindowsWithTitle(title)[0]
 				window.activate()
 				break
 			except:
 				pass 
+			count += 1	
 
 		return window
 
@@ -68,6 +72,7 @@ class Control:
 			output = self.process.stdout.read1().decode()
 			reward = int(output.split()[0])
 		except:
+			self.stop()
 			reward = 0
 		return reward
 	

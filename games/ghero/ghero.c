@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <allegro5/allegro.h>
-#include <allegro5/allegro_font.h>
+// #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_primitives.h>
 #include <stdlib.h>
@@ -9,7 +9,7 @@
 #define MAXTILES 5
 #define AVG_TILES_PER_LANE 20
 #define MAXLANES 6 // Maximo 9
-#define MIN_SCORE -10*NUM_LANES
+#define MIN_SCORE -25*NUM_LANES
 
 #define CREATED 0
 #define HIT -1
@@ -18,7 +18,7 @@
 
 
 
-const int FPS = 180;  
+const int FPS = 120; //180;  
 const int SCREEN_W = 960;
 const int SCREEN_H = 640;
 
@@ -37,7 +37,7 @@ int TRACK_LEFT_X;
 int TRACK_RIGHT_X;
 int KEY1 = ALLEGRO_KEY_1;
 
-ALLEGRO_FONT *SIZE_TITLE;   
+// ALLEGRO_FONT *SIZE_TITLE;   
 ALLEGRO_COLOR COLORS[MAXLANES];
 
 
@@ -72,6 +72,13 @@ int newRecord(int score, int *record) {
 	
 }
 
+void print_reward(ALLEGRO_FILE *fd, int reward) {
+        char txt[5];
+        sprintf(txt, "%3d\n", reward);
+        al_fflush(fd);
+        al_fwrite(fd, txt, sizeof(txt));
+}
+
 
 void init_track() {
 	int i;
@@ -83,7 +90,7 @@ void init_track() {
 	TRACK_LEFT_X = SCREEN_W/2 - TRACK_W/2;
 	TRACK_RIGHT_X = TRACK_LEFT_X + TRACK_W;
 	
-	SIZE_TITLE = al_load_font("arial.ttf", 64, 1);  
+	// SIZE_TITLE = al_load_font("arial.ttf", 64, 1);  
 	for(i=0; i<NUM_LANES; i++) {
 		COLORS[i] = al_map_rgb(30+rand()%226,30+rand()%226,30+rand()%226);
 	}
@@ -102,7 +109,7 @@ void draw_scenario(ALLEGRO_DISPLAY *display) {
 	al_draw_filled_rectangle(0, 0, SCREEN_W, SKY_H, al_map_rgb(100,100,100));
 	//TITLE
 	//sprintf(texto, "\\a HERO");
-    al_draw_text(SIZE_TITLE, al_map_rgb(255, 0, 0), SCREEN_W/2 - 150, SKY_H/4, 0, "\\a HERO");
+    // al_draw_text(SIZE_TITLE, al_map_rgb(255, 0, 0), SCREEN_W/2 - 150, SKY_H/4, 0, "\\a HERO");
    
    //desenha a pista:
    al_draw_line(TRACK_LEFT_X, SKY_H, TRACK_LEFT_X, SCREEN_H, al_map_rgb(255,255,255), 10); 
@@ -119,7 +126,7 @@ void draw_scenario(ALLEGRO_DISPLAY *display) {
 int tileDelayCollision(Tile t1, Tile t2) {
 	float deltat = 2*TILE_R/(TILE_SPEED/5.0);
 	if(abs(t1.delay - t2.delay) < deltat) {
-		//printf("\ndelay collision: %d %d %f", t1.delay, t2.delay, deltat);
+		// printf("\ndelay collision: %d %d %f", t1.delay, t2.delay, deltat);
 		return 1;
 	}
 	return 0;
@@ -246,6 +253,8 @@ int main(int argc, char **argv){
 	ALLEGRO_TIMER *timer = NULL;
 	int i=0, miss=0;
 
+	ALLEGRO_FILE *text_out = al_fopen_fd(1, "w");
+
 	NUM_LANES = 3;
 	TILE_SPEED = 3;
 	
@@ -266,7 +275,7 @@ int main(int argc, char **argv){
 	Tile tiles[MAXTILES];
 	
 	int keys[MAXLANES];
-	int errors[MAXLANES];
+	int errors[MAXLANES] = {0};
 	// for(i=0; i<MAXLANES; i++) {
 	// 	keys[i] = KEY1+i;
 	// 	errors[i] = 0;
@@ -278,7 +287,7 @@ int main(int argc, char **argv){
 
 	
 	char my_score[10];
-	char texto[100];
+	// char texto[100];
  
 	//----------------------- rotinas de inicializacao ---------------------------------------
    if(!al_init()) {
@@ -312,7 +321,7 @@ int main(int argc, char **argv){
 
 
 	//carrega o arquivo arial.ttf da fonte Arial e define que sera usado o tamanho 32 (segundo parametro)
-    ALLEGRO_FONT *size_32 = al_load_font("arial.ttf", 32, 1);   	
+    // ALLEGRO_FONT *size_32 = al_load_font("arial.ttf", 32, 1);   	
 
  
 
@@ -344,103 +353,108 @@ int main(int argc, char **argv){
 	initTiles(tiles);
 	
    int playing = 1;
+   print_reward(text_out, score);
+
 	//enquanto playing for verdadeiro, faca:
    while(playing) {
-      ALLEGRO_EVENT ev;
-	  //espera por um evento e o armazena na variavel de evento ev
-      al_wait_for_event(event_queue, &ev);
-	  
-	if(ev.type == ALLEGRO_EVENT_KEY_DOWN) {
-		printf("\n%d", ev.keyboard.keycode);
-		//verifica qual tecla foi
+		print_reward(text_out, score);
+		ALLEGRO_EVENT ev;
+		//espera por um evento e o armazena na variavel de evento ev
+		al_wait_for_event(event_queue, &ev);
 		
-		for(i=0; i<MAXLANES; i++) {
-			if(ev.keyboard.keycode == keys[i]) {
-				if(laneHit(i, tiles)) {
-					score+= TILE_SPEED*NUM_LANES;
-					count_tiles_done++;
-					printf("\a");
+		if(ev.type == ALLEGRO_EVENT_KEY_DOWN) {
+				// printf("\n%d", ev.keyboard.keycode);
+				//verifica qual tecla foi
+				
+				for(i=0; i<MAXLANES; i++) {
+					if(ev.keyboard.keycode == keys[i]) {
+						if(laneHit(i, tiles)) {
+							score+= TILE_SPEED*NUM_LANES;
+							count_tiles_done++;
+							print_reward(text_out, score);
+
+							// printf("\a");
+						}
+						else {
+							score-= TILE_SPEED;
+							errors[i] = 10;
+						}
+					i = MAXLANES;
+					}
 				}
-				else {
-					score-= TILE_SPEED;
-					errors[i] = 1;
+				
+				
+				if(ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
+					playing = 0;
 				}
-			i = MAXLANES;
-			}
-		}
 		
-		
-		if(ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
-			playing = 0;
 		}
- 
-   }
-	//se o tipo de evento for um evento do temporizador, ou seja, se o tempo passou de t para t+1
-    else if(ev.type == ALLEGRO_EVENT_TIMER) {
-		draw_scenario(display);
-		updateTiles(tiles);
-		drawTiles(tiles);
-		miss=0;
-		for(i=0; i<MAXLANES; i++) {
-			if(errors[i]) {
-				drawError(i);
-				errors[i] = 0;
-				miss++;
+		//se o tipo de evento for um evento do temporizador, ou seja, se o tempo passou de t para t+1
+		if(ev.type == ALLEGRO_EVENT_TIMER) {
+			draw_scenario(display);
+			updateTiles(tiles);
+			drawTiles(tiles);
+			miss=0;
+			for(i=0; i<MAXLANES; i++) {
+				if(errors[i] > 0) {
+					drawError(i);
+					errors[i]--;
+					miss++;
+				}
 			}
-		}
 
 		
 		
-		//SCORE
-		sprintf(my_score, "%d", score);
-        al_draw_text(size_32, al_map_rgb(255, 0, 0), SCREEN_W-100, 20, 0, my_score);
-		
+			//SCORE
+			sprintf(my_score, "%d", score);
+			// al_draw_text(size_32, al_map_rgb(255, 0, 0), SCREEN_W-100, 20, 0, my_score);
+			
 
-		//reinicializo a tela
-		 al_flip_display();
-		 if(miss > 0) {
-			al_stop_timer(timer);
-			al_rest(0.2);
-			al_start_timer(timer);
-		}
+			//reinicializo a tela
+			al_flip_display();
+			// if(miss > 0) {
+			// 	al_stop_timer(timer);
+			// 	al_rest(0.2);
+			// 	al_start_timer(timer);
+			// }
 			 
 
-    }
-	//se o tipo de evento for o fechamento da tela (clique no x da janela)
-	else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-		score = 0;
-		playing = 0;
-	}
-	
-	if(score < MIN_SCORE || count_tiles_done == TOTAL_TILES) {
-		//printf("\ncount_tiles_done = %d", count_tiles_done);
-		playing = 0;
-	}
-	
+    	}
+		//se o tipo de evento for o fechamento da tela (clique no x da janela)
+		if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+			score = 0;
+			playing = 0;
+		}
+		
+		if(score < MIN_SCORE || count_tiles_done == TOTAL_TILES) {
+			//printf("\ncount_tiles_done = %d", count_tiles_done);
+			playing = 0;
+		}
+		
   } //fim do while
      
 	//procedimentos de fim de jogo (fecha a tela, limpa a memoria, etc)
 	
-	al_rest(1);
+	// al_rest(1);
 	
-	char my_text[20];	
-	int record;
-	//colore toda a tela de preto
-	al_clear_to_color(al_map_rgb(230,240,250));
-	sprintf(my_text, "Score: %d", score);
-	al_draw_text(size_32, al_map_rgb(200, 0, 30), SCREEN_W/3, SCREEN_H/2, 0, my_text);
-	if(newRecord(score, &record)) {
-		al_draw_text(size_32, al_map_rgb(200, 20, 30), SCREEN_W/3, 100+SCREEN_H/2, 0, "NEW RECORD!");
-	}
-	else {
-		sprintf(my_text, "Record: %d", record);
-		al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/3, 100+SCREEN_H/2, 0, my_text);
-	}
+	// char my_text[20];	
+	// int record;
+	// //colore toda a tela de preto
+	// al_clear_to_color(al_map_rgb(230,240,250));
+	// sprintf(my_text, "Score: %d", score);
+	// al_draw_text(size_32, al_map_rgb(200, 0, 30), SCREEN_W/3, SCREEN_H/2, 0, my_text);
+	// if(newRecord(score, &record)) {
+	// 	al_draw_text(size_32, al_map_rgb(200, 20, 30), SCREEN_W/3, 100+SCREEN_H/2, 0, "NEW RECORD!");
+	// }
+	// else {
+	// 	sprintf(my_text, "Record: %d", record);
+	// 	al_draw_text(size_32, al_map_rgb(0, 200, 30), SCREEN_W/3, 100+SCREEN_H/2, 0, my_text);
+	// }
  
 	
-	//reinicializa a tela
-	al_flip_display();	
-    al_rest(2);	
+	// //reinicializa a tela
+	// al_flip_display();	
+    // al_rest(2);	
 	
   
    al_destroy_timer(timer);
