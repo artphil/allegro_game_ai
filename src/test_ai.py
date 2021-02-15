@@ -29,9 +29,13 @@ print()
 print('Selecione o executável do jogo')
 path_file_exe = filedialog.askopenfilename(filetypes=[("Execuável", ".exe")])
 filename_exe = path_file_exe.split('/')[-1]
+path_folder = path_file_exe.replace('/'+filename_exe, '')
 print (path_file_exe)
+print ('Pasta', path_folder)
 print ('Executável:', filename_exe)
 print()
+
+os.chdir(path_folder)
 
 print('Selecione um diretório para os resultados')
 path_results = filedialog.askdirectory()
@@ -67,7 +71,7 @@ tot_reward_hist = []
 
 for i in range(NUM_EPISODES):
 	# Iniciando o jogo
-	reward = 0
+	last_reward = 0
 	position = 0
 	cnt = 1
 	avg_loss = 0
@@ -75,6 +79,8 @@ for i in range(NUM_EPISODES):
 	done = False
 
 	control = au.Control(path_file_exe, filename_exe)
+	if not control:
+		continue
 	capture = au.State(control.window, path_results)
 	width = control.window.width
 	height = control.window.height
@@ -98,30 +104,31 @@ for i in range(NUM_EPISODES):
 		if action != 'escape':
 			control.press(action)
 
-		reward = control.getReward()
+		tot_reward = control.getReward()
+		reward = tot_reward - last_reward
+		last_reward = tot_reward
 		try:
 			screen = np.array(capture.print())[:,:,:3]
 		except:
 			# print(f'Erro ao atualizar jogo. Episodio {i}')
 			control.stop()
 			done = True
-			# reward = -10
 
 		if done:
 			if steps > DELAY_TRAINING:
 				if i%100 == 0:
 					player.save_networks()
 				avg_loss /= cnt
-				print(f"Episode: {i}, Reward: {reward:.2f}, avg loss: {avg_loss:.5f}, eps: {eps:.3f}, total steps: {steps}")
-				player.save_training(reward, avg_loss, i)
+				print(f"Episode: {i}, Reward: {tot_reward:.2f}, avg loss: {avg_loss:.5f}, eps: {eps:.3f}, total steps: {steps}")
+				player.save_training(tot_reward, avg_loss, i)
 			else:
-				print(f"Pre-training...Episode: {i}, Reward: {reward:.2f}, total steps: {steps}")
+				print(f"Pre-training...Episode: {i}, Reward: {tot_reward:.2f}, total steps: {steps}")
 			if i % GIF_RECORDING_FREQ == 0:
 				image.save_gif(frame_list, i)
-			if reward > max_tot_reward:
-				max_tot_reward=reward
+			if tot_reward > max_tot_reward:
+				max_tot_reward = tot_reward
 				image.save_gif(frame_list,i,best=True)
-			tot_reward_hist.append(reward)
+			tot_reward_hist.append(tot_reward)
 			break
 
 		next_state = image.preprocess(screen)
