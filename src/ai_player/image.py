@@ -5,7 +5,7 @@ import imageio
 import numpy as np
 
 
-PRE_PROCESS_IMAGE_SIZE = (84, 84)
+PRE_PROCESS_IMAGE_SIZE = (160, 120)
 
 class Image:
 	def __init__(self, path):
@@ -17,7 +17,7 @@ class Image:
 		# convert to greyscale, resize and normalize the image
 		img = tf.image.rgb_to_grayscale(image)
 		img = tf.image.resize(img, new_size)
-		return img #/ 255
+		return img / 255
 
 	def stack(self, image, num_frames):
 		img = tf.Variable(np.repeat(image.numpy(), num_frames).reshape((PRE_PROCESS_IMAGE_SIZE[0], PRE_PROCESS_IMAGE_SIZE[1], num_frames)))

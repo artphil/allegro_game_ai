@@ -8,7 +8,7 @@ from .model import DQModel
 from .memory import Memory
 
 DELAY_TRAINING = 5000
-POST_PROCESS_IMAGE_SIZE = (84, 84, 1)
+POST_PROCESS_IMAGE_SIZE = (160, 120, 1)
 NUM_FRAMES = 4
 HARD_UPDATE_FREQ = 10000
 TAU = 0.08

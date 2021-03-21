@@ -11,11 +11,11 @@ MIN_EPSILON = 0.05
 EPSILON_MIN_ITER = 50000
 
 NUM_FRAMES = 4
-POST_PROCESS_IMAGE_SIZE = (84, 84, 1)
+POST_PROCESS_IMAGE_SIZE = (160, 120, 1)
 MAX_MEMORY_SIZE = 50000
 GIF_RECORDING_FREQ = 200
 
-NUM_EPISODES = 100001
+NUM_EPISODES = 10001
 DELAY_TRAINING = 5000
 
 
@@ -58,9 +58,9 @@ image = Image(path_results)
 player = Player(len(data.keys), MAX_MEMORY_SIZE, path_results)
 
 # Carregando pesos antigos
-op = input('Deseja usar pesos salvos?(S/N)')
-if op.lower() == 's':
-	player.load_networks()
+# op = input('Deseja usar pesos salvos?(S/N)')
+# if op.lower() == 's':
+# 	player.load_networks()
 
 # Treinamento
 eps = MAX_EPSILON
@@ -79,11 +79,12 @@ for i in range(NUM_EPISODES):
 	done = False
 
 	control = au.Control(path_file_exe, filename_exe)
-	if not control:
+	try:
+		width = control.window.width
+		height = control.window.height
+	except:
 		continue
 	capture = au.State(control.window, path_results)
-	width = control.window.width
-	height = control.window.height
 	
 	try:
 		screen = np.array(capture.print())[:,:,:3]
@@ -106,7 +107,9 @@ for i in range(NUM_EPISODES):
 
 		tot_reward = control.getReward()
 		reward = tot_reward - last_reward
+		# if last_reward != tot_reward: print(tot_reward, end=' ')
 		last_reward = tot_reward
+		
 		try:
 			screen = np.array(capture.print())[:,:,:3]
 		except:
@@ -115,6 +118,7 @@ for i in range(NUM_EPISODES):
 			done = True
 
 		if done:
+			# print()
 			if steps > DELAY_TRAINING:
 				if i%100 == 0:
 					player.save_networks()
@@ -129,6 +133,7 @@ for i in range(NUM_EPISODES):
 				max_tot_reward = tot_reward
 				image.save_gif(frame_list,i,best=True)
 			tot_reward_hist.append(tot_reward)
+			np.array(tot_reward_hist).tofile(os.path.join(path_results, 'tot_reward_hist.csv'),sep='\n',format='%.2f')
 			break
 
 		next_state = image.preprocess(screen)
@@ -140,7 +145,7 @@ for i in range(NUM_EPISODES):
 
 		if steps > DELAY_TRAINING:
 			loss = player.training(target=True if double_q else False)
-			player.update_network(steps)
+			player.update_network(steps, False)
 		else:
 			loss = -1
 		avg_loss += loss
@@ -154,4 +159,3 @@ for i in range(NUM_EPISODES):
 		steps += 1
 		cnt += 1
 
-np.array(tot_reward_hist).tofile(os.path.join(path_results, 'tot_reward_hist.csv'),sep='\n',format='%.2f')

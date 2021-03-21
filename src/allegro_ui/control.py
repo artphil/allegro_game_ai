@@ -23,12 +23,14 @@ class Control:
 			print('Sistema Operacional não suportado')
 			quit()
 
+		self.reward = 0
+
 	def getWindowWindows(self,title):
 		# Espera a janela abrir e a ativa 
 		count = 0
 		while True:
-			if count > 1000:
-				return None
+			# if count > 1000:
+			# 	return
 			try: 
 				window = gw.getWindowsWithTitle(title)[0]
 				window.activate()
@@ -71,10 +73,10 @@ class Control:
 		try:
 			output = self.process.stdout.read1().decode()
 			reward = int(output.split()[0])
+			self.reward = reward
 		except:
 			self.stop()
-			reward = 0
-		return reward
+		return self.reward
 	
 
 # Classe de janela para Mac !!!! Workaround - NOT RECOMENDED !!!!
